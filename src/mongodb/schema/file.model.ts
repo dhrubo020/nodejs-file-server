@@ -23,6 +23,9 @@ const FileSchema = new Schema<IFile>(
       type: String,
       index: true,
     },
+    provider: {
+      type: String,
+    },
   },
   {
     timestamps: true,

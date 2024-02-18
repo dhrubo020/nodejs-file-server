@@ -56,7 +56,8 @@ export class LocalStorageService {
     return new Promise((resolve, reject) => {
       const fileStream = fs.createReadStream(filePath);
       fileStream.on('error', (error) => {
-        reject(error);
+        console.log(error.message);
+        resolve(null);
       });
       fileStream.on('open', () => {
         resolve(fileStream);
