@@ -17,7 +17,7 @@ export class LocalStorageService {
     return filePath;
   }
 
-  async multerUpload(file: Express.Multer.File): Promise<IUploadedData> {
+  async uploadToLocal(file: Express.Multer.File): Promise<IUploadedData> {
     let result: IUploadedData = {
       success: false,
       fileKey: null,
@@ -61,6 +61,19 @@ export class LocalStorageService {
       });
       fileStream.on('open', () => {
         resolve(fileStream);
+      });
+    });
+  }
+
+  async deleteFromLocal(key: string): Promise<boolean> {
+    const filePath = this.getFilePath(key);
+    return new Promise((resolve, reject) => {
+      const fileStream = fs.unlink(filePath, (err) => {
+        if (err) {
+          console.log('Can not delete file from local storage');
+          resolve(false);
+        }
+        resolve(true);
       });
     });
   }

@@ -1,18 +1,15 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3,
-  S3Client,
 } from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { providerConfig } from 'config';
 import { IUploadedData } from 'src/interfaces';
-import * as fs from 'fs';
 
 @Injectable()
-export class S3Service {}
-@Injectable()
-export class CloudStorageService {
+export class BucketRepository {
   private s3Client: S3;
   private bucketName: string;
   constructor() {
@@ -41,30 +38,31 @@ export class CloudStorageService {
       fileKey: null,
       message: '',
     };
-    const s3uploadParams = {
-      Bucket: this.bucketName,
-      Key: file.originalname,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    };
-
-    // upload to s3 bucket
-    const uploadCommand = new PutObjectCommand(s3uploadParams);
-    const uploaded = await this.s3Client.send(uploadCommand);
-    if (!uploaded || !uploaded.ETag) {
+    try {
+      const s3uploadParams = {
+        Bucket: this.bucketName,
+        Key: file.originalname,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      };
+      // upload to s3 bucket
+      const uploaded = await this.s3Client.send(
+        new PutObjectCommand(s3uploadParams),
+      );
+      return { ...result, success: true, fileKey: uploaded.ETag };
+    } catch (error) {
+      console.log(error.message);
       return { ...result, message: 'Can not upload to s3' };
     }
-    return { ...result, success: true, fileKey: uploaded.ETag };
   }
 
-  async getFromS3(fileKey: string) {
+  async getFromS3(fileKey: string): Promise<any> {
     try {
       const params = {
         Bucket: this.bucketName,
         Key: fileKey,
       };
-      const command = new GetObjectCommand(params);
-      const data = await this.s3Client.send(command);
+      const data = await this.s3Client.send(new GetObjectCommand(params));
       if (!data || !data?.Body) {
         return null;
       }
@@ -72,6 +70,20 @@ export class CloudStorageService {
     } catch (error) {
       console.log(error.message);
       return null;
+    }
+  }
+
+  async deleteFromS3(fileKey: string): Promise<boolean> {
+    try {
+      const params = {
+        Bucket: this.bucketName,
+        Key: fileKey,
+      };
+      await this.s3Client.send(new DeleteObjectCommand(params));
+      return true;
+    } catch (error) {
+      console.error('Error deleting file:', error.message);
+      return false;
     }
   }
 }

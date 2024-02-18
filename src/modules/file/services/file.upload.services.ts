@@ -5,8 +5,8 @@ import { Response } from 'express';
 import { ReadStream } from 'fs';
 import { IFileUploadRes, IUploadedData, ProviderEnum } from 'src/interfaces';
 import { exception, IServiceResponse, successResponse } from 'src/utils';
+import { BucketRepository } from '../repositories/bucket.repository';
 import { FileRepository } from '../repositories/file.repository';
-import { CloudStorageService } from './cloud.storage.service';
 import { LocalStorageService } from './local.storage.service';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class FileUploadService {
   private provider: ProviderEnum;
   constructor(
     private readonly localStorageService: LocalStorageService,
-    private readonly cloudStorageService: CloudStorageService,
+    private readonly bucketRepository: BucketRepository,
     private readonly fileRepository: FileRepository,
   ) {
     this.provider = providerConfig.name as ProviderEnum;
@@ -60,10 +60,12 @@ export class FileUploadService {
     if (!fileInfo) {
       exception('File not found', HttpStatus.NOT_FOUND);
     }
-    const { fileKey, mimeType, provider } = fileInfo;
+    const { fileKey, mimeType } = fileInfo;
     res.setHeader('Content-Type', mimeType);
-    // const fileStream = await this.localStorageService.retirveFile(fileKey);
-    const fileStream = (await this.retriveFile(fileKey, this.provider)) as any;
+    const fileStream = (await this.handleRetriveFile(
+      fileKey,
+      this.provider,
+    )) as any;
     if (!fileStream) {
       exception(
         'The specified key does not exist on storage location',
@@ -71,29 +73,65 @@ export class FileUploadService {
       );
     }
     return fileStream.pipe(res);
-    // return { fileStream, mimeType };
+  }
+
+  async deleteFile(
+    privateKey: string,
+  ): Promise<IServiceResponse<{ message: string }>> {
+    const fileInfo = await this.fileRepository.deleteFileInfo(privateKey);
+    console.log(fileInfo.fileKey);
+
+    if (!fileInfo) {
+      exception(
+        'Can not delete the file or file not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const isDeleted = (await this.handleDeleteFile(
+      fileInfo.fileKey,
+      this.provider,
+    )) as any;
+    if (!isDeleted) {
+      exception(
+        'The specified key does not exist on storage location',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    return successResponse({ message: 'File has been deleted successfully' });
   }
 
   private async handleUpload(
     file: Express.Multer.File,
   ): Promise<IUploadedData> {
     if (this.provider === ProviderEnum.LOCAL) {
-      return await this.localStorageService.multerUpload(file);
+      return await this.localStorageService.uploadToLocal(file);
     } else if (this.provider === ProviderEnum.S3_BUCKET) {
-      return await this.cloudStorageService.uploadToS3(file);
+      return await this.bucketRepository.uploadToS3(file);
     } else {
     }
     return null;
   }
 
-  private async retriveFile(fileKey: string, provider: ProviderEnum) {
+  private async handleRetriveFile(fileKey: string, provider: ProviderEnum) {
     switch (provider) {
       case ProviderEnum.LOCAL: {
         return await this.localStorageService.retirveFile(fileKey);
       }
       case ProviderEnum.S3_BUCKET: {
-        return await this.cloudStorageService.getFromS3(fileKey);
+        return await this.bucketRepository.getFromS3(fileKey);
       }
+    }
+  }
+
+  private async handleDeleteFile(fileKey: string, provider: ProviderEnum) {
+    switch (provider) {
+      case ProviderEnum.LOCAL: {
+        return await this.localStorageService.deleteFromLocal(fileKey);
+      }
+      case ProviderEnum.S3_BUCKET: {
+        return await this.bucketRepository.deleteFromS3(fileKey);
+      }
+      default:
     }
   }
 }

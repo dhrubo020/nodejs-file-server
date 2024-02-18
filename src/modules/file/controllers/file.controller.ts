@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -48,5 +49,10 @@ export class AdminMediaController {
     // res.setHeader('Content-Type', mimeType);
     // fileStream.pipe(res);
     return await this.fileUploadService.getFile(key, res);
+  }
+
+  @Delete('/:privateKey')
+  async deleteFile(@Param('privateKey') key: string) {
+    return await this.fileUploadService.deleteFile(key);
   }
 }
