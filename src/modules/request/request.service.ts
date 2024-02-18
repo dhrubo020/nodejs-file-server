@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
-import { exception } from '../response';
+import { exception } from '../../utils/response';
 
 @Injectable()
 export class RequestService {

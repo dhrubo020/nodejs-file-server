@@ -36,7 +36,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   await app.listen(coreConfig.port);
-  console.log(`http://${coreConfig.host}:${coreConfig.port}`);
+  console.log(
+    `Api documentation: http://${coreConfig.host}:${coreConfig.port}`,
+  );
 }
 
 bootstrap();
