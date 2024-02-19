@@ -17,9 +17,6 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
     const res: Response = ctx.getResponse<Response>();
     let error: APIError;
     let status: HttpStatus;
-
-    console.log(exception);
-
     if (exception instanceof APIException) {
       // application specific errors
       error = this.formatAPIException(exception, this.isProduction);

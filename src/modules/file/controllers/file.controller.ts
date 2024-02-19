@@ -7,13 +7,16 @@ import {
   Post,
   Res,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { Response } from 'express';
 import { FileUploadService } from '../services/file.upload.services';
 
+@UseGuards(ThrottlerGuard)
 @Controller('files')
 @ApiTags('Files API')
 export class AdminMediaController {
