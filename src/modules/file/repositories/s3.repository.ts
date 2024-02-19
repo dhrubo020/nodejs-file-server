@@ -7,9 +7,10 @@ import {
 import { Injectable } from '@nestjs/common';
 import { providerConfig } from 'config';
 import { IUploadedData } from 'src/interfaces';
+import { IStorageRepository } from './types.repository';
 
 @Injectable()
-export class BucketRepository {
+export class S3Repository implements IStorageRepository {
   private s3Client: S3;
   private bucketName: string;
   constructor() {
@@ -32,7 +33,7 @@ export class BucketRepository {
     ]);
   }
 
-  async uploadToS3(file: Express.Multer.File): Promise<IUploadedData> {
+  async upload(file: Express.Multer.File): Promise<IUploadedData> {
     let result: IUploadedData = {
       success: false,
       fileKey: null,
@@ -56,7 +57,7 @@ export class BucketRepository {
     }
   }
 
-  async getFromS3(fileKey: string): Promise<any> {
+  async retrive(fileKey: string): Promise<any> {
     try {
       const params = {
         Bucket: this.bucketName,
@@ -73,7 +74,7 @@ export class BucketRepository {
     }
   }
 
-  async deleteFromS3(fileKey: string): Promise<boolean> {
+  async delete(fileKey: string): Promise<boolean> {
     try {
       const params = {
         Bucket: this.bucketName,

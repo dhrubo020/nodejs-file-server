@@ -6,6 +6,7 @@ const {
   AWS_ACCESS_KEY_ID,
   AWS_SECRET_ACCESS_KEY,
   AWS_REGION,
+  GCP_BUCKET_NAME,
 } = process.env;
 
 export const providerConfig = {
@@ -20,5 +21,7 @@ export const providerConfig = {
     aws_secretAccessKey: AWS_SECRET_ACCESS_KEY || '',
     aws_region: AWS_REGION || '',
   },
-  gcpBucketConfig: {},
+  gcpBucketConfig: {
+    name: GCP_BUCKET_NAME || 'taskProject',
+  },
 };

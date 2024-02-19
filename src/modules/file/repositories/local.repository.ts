@@ -3,9 +3,10 @@ import { providerConfig } from 'config';
 import * as fs from 'fs';
 import { join } from 'path';
 import { IUploadedData } from 'src/interfaces';
+import { IStorageRepository } from './types.repository';
 
 @Injectable()
-export class LocalStorageService {
+export class LocalRepository implements IStorageRepository {
   private folder = providerConfig.localBucketConfig.location;
 
   private getFilePath(key: string): string {
@@ -17,7 +18,7 @@ export class LocalStorageService {
     return filePath;
   }
 
-  async uploadToLocal(file: Express.Multer.File): Promise<IUploadedData> {
+  async upload(file: Express.Multer.File): Promise<IUploadedData> {
     let result: IUploadedData = {
       success: false,
       fileKey: null,
@@ -51,7 +52,7 @@ export class LocalStorageService {
     }
   }
 
-  async retirveFile(key: string): Promise<fs.ReadStream> {
+  async retrive(key: string): Promise<fs.ReadStream> {
     const filePath = this.getFilePath(key);
     return new Promise((resolve, reject) => {
       const fileStream = fs.createReadStream(filePath);
@@ -65,7 +66,7 @@ export class LocalStorageService {
     });
   }
 
-  async deleteFromLocal(key: string): Promise<boolean> {
+  async delete(key: string): Promise<boolean> {
     const filePath = this.getFilePath(key);
     return new Promise((resolve, reject) => {
       const fileStream = fs.unlink(filePath, (err) => {

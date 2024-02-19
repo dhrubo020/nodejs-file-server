@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from 'src/database/entities/file.entity';
 import { IFile } from 'src/interfaces';
 import { Repository } from 'typeorm';
-import { AbsFileRepository } from './abstract.repository';
+import { AbstractDBFileRepository } from './types.repository';
 
 @Injectable()
-export class FileRepository implements AbsFileRepository {
+export class DBFileRepository implements AbstractDBFileRepository {
   constructor(
     @InjectRepository(FileEntity)
     private fileOrmRepository: Repository<FileEntity>,
