@@ -6,11 +6,9 @@ import { coreConfig } from 'config/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { connectToDatabase } from './mongodb';
 import { AllExceptionsFilter } from './utils';
 
 async function bootstrap() {
-  await connectToDatabase();
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix(coreConfig.restApiPrefix);
   app.enableCors({

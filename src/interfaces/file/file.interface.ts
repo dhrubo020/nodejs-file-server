@@ -1,5 +1,5 @@
 export interface IFile {
-  id?: string;
+  id?: number;
   mimeType: string;
   fileKey: string;
   privateKey: string;

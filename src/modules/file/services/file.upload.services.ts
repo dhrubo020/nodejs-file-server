@@ -79,8 +79,6 @@ export class FileUploadService {
     privateKey: string,
   ): Promise<IServiceResponse<{ message: string }>> {
     const fileInfo = await this.fileRepository.deleteFileInfo(privateKey);
-    console.log(fileInfo.fileKey);
-
     if (!fileInfo) {
       exception(
         'Can not delete the file or file not found',
