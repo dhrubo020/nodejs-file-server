@@ -25,10 +25,14 @@ export class FileUploadService {
     const privateKey = this.generateKey();
     const mimeType = file.mimetype;
     const fileKey = file.originalname;
+    // upload file to storage
+
     const uploaded = await this.storageRepository.upload(file);
-    if (!uploaded.success) {
-      throw exception(uploaded.message, HttpStatus.CONFLICT);
+    if (!uploaded?.success) {
+      exception('Can not upload to storage', HttpStatus.CONFLICT);
     }
+
+    // save file info in database
     const savedFile = await this.dbFileRepository.saveFileInfo({
       fileKey,
       mimeType,

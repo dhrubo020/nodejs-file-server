@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { securityConfig } from 'config/security';
+import { securityConfig } from 'config';
 
 @Global()
 @Module({
