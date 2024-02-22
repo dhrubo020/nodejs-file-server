@@ -45,17 +45,11 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Run the test files
 
 ```bash
 # unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ npm run test:jest
 ```
 
 ## Support
