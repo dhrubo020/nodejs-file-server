@@ -34,7 +34,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(coreConfig.port);
   console.log(
-    `Api Documentation: http://${coreConfig.host}:${coreConfig.port}`,
+    `Api Documentation: http://${coreConfig.host}:${coreConfig.port}/api`,
   );
 }
 
