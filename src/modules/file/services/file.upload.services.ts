@@ -18,6 +18,13 @@ export class FileUploadService {
     this.provider = providerConfig.name as ProviderEnum;
   }
 
+  /**
+   * Upload file
+   *
+   * @param {Express.Multer.File} file
+   * @return {*}  {Promise<IServiceResponse<IFileUploadRes>>}
+   * @memberof FileUploadService
+   */
   async uploadFiles(
     file: Express.Multer.File,
   ): Promise<IServiceResponse<IFileUploadRes>> {
@@ -57,6 +64,14 @@ export class FileUploadService {
     return randomUUID();
   }
 
+  /**
+   * Get file by publicKy
+   *
+   * @param {string} publicKey
+   * @param {Response} res
+   * @return {*}  {Promise<any>}
+   * @memberof FileUploadService
+   */
   async getFile(publicKey: string, res: Response): Promise<any> {
     const fileInfo = await this.dbFileRepository.getFileInfo(publicKey);
     if (!fileInfo) {
@@ -74,6 +89,13 @@ export class FileUploadService {
     return fileStream.pipe(res);
   }
 
+  /**
+   * Delete file by private key
+   *
+   * @param {string} privateKey
+   * @return {*}  {Promise<IServiceResponse<{ message: string }>>}
+   * @memberof FileUploadService
+   */
   async deleteFile(
     privateKey: string,
   ): Promise<IServiceResponse<{ message: string }>> {
@@ -95,49 +117,4 @@ export class FileUploadService {
     }
     return successResponse({ message: 'File has been deleted successfully' });
   }
-
-  // private async handleUpload(
-  //   file: Express.Multer.File,
-  //   provider: ProviderEnum,
-  // ): Promise<IUploadedData> {
-  //   switch (provider) {
-  //     case ProviderEnum.LOCAL: {
-  //       return await this.localRepository.upload(file);
-  //     }
-  //     case ProviderEnum.S3_BUCKET: {
-  //       return await this.s3Repository.upload(file);
-  //     }
-  //     case ProviderEnum.GCP_BUCKET: {
-  //       return await this.gcpRepository.upload(file);
-  //     }
-  //     default:
-  //       return null;
-  //   }
-  // }
-
-  // private async handleRetriveFile(fileKey: string, provider: ProviderEnum) {
-  //   switch (provider) {
-  //     case ProviderEnum.LOCAL: {
-  //       return await this.localRepository.retrive(fileKey);
-  //     }
-  //     case ProviderEnum.S3_BUCKET: {
-  //       return await this.s3Repository.retrive(fileKey);
-  //     }
-  //     default:
-  //       return null;
-  //   }
-  // }
-
-  // private async handleDeleteFile(fileKey: string, provider: ProviderEnum) {
-  //   switch (provider) {
-  //     case ProviderEnum.LOCAL: {
-  //       return await this.localRepository.delete(fileKey);
-  //     }
-  //     case ProviderEnum.S3_BUCKET: {
-  //       return await this.s3Repository.delete(fileKey);
-  //     }
-  //     default:
-  //       return null;
-  //   }
-  // }
 }

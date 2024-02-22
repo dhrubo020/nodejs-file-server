@@ -11,6 +11,14 @@ export class DBFileRepository implements AbstractDBFileRepository {
     @InjectRepository(FileEntity)
     private fileOrmRepository: Repository<FileEntity>,
   ) {}
+
+  /**
+   * Save file info in DB
+   *
+   * @param {IFile} data
+   * @return {*}  {Promise<IFile>}
+   * @memberof DBFileRepository
+   */
   async saveFileInfo(data: IFile): Promise<IFile> {
     try {
       data = this.fileOrmRepository.create(data);
@@ -21,6 +29,13 @@ export class DBFileRepository implements AbstractDBFileRepository {
     }
   }
 
+  /**
+   * Get file info from DB
+   *
+   * @param {string} publicKey
+   * @return {*}  {Promise<IFile>}
+   * @memberof DBFileRepository
+   */
   async getFileInfo(publicKey: string): Promise<IFile> {
     try {
       return await this.fileOrmRepository.findOneBy({ publicKey });
@@ -30,6 +45,13 @@ export class DBFileRepository implements AbstractDBFileRepository {
     }
   }
 
+  /**
+   * Delete file info from DB
+   *
+   * @param {string} privateKey
+   * @return {*}  {Promise<IFile>}
+   * @memberof DBFileRepository
+   */
   async deleteFileInfo(privateKey: string): Promise<IFile> {
     try {
       const isExist = await this.fileOrmRepository.findOneBy({ privateKey });

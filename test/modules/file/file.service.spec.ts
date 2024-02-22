@@ -6,7 +6,7 @@ import { INestApplication } from '@nestjs/common';
 import { AppModule } from 'src/app.module';
 import { IFileUploadRes } from 'src/interfaces';
 
-describe('FileUploadService', () => {
+describe('Initializing Test Module...', () => {
   let fileService: FileUploadService;
   let dbFileRepository: DBFileRepository;
   let storageRepository: IStorageRepository;
@@ -28,7 +28,7 @@ describe('FileUploadService', () => {
     );
   });
 
-  describe('uploadFiles', () => {
+  describe('Testing file upload service', () => {
     const validMockFile: Express.Multer.File = {
       fieldname: 'file',
       originalname: 'testFile.txt',
@@ -39,62 +39,24 @@ describe('FileUploadService', () => {
     } as any;
 
     let data: IFileUploadRes;
+
     it('If file upload is successfull', async () => {
       const response = await fileService.uploadFiles(validMockFile);
-      console.log({ response });
       data = response.data;
       expect(response.success).toBe(true);
     });
 
-    it.only('If file delete is unsuccessfull', async () => {
+    it('If file delete will be unsuccessfull for wrongKey', async () => {
       await expect(
         async () => await fileService.deleteFile('wrongKey'),
       ).rejects.toThrow();
     });
 
-    it('If file delete is successfull', async () => {
+    it('If file delete will be successfull using the private key', async () => {
       const response = await fileService.deleteFile(data.privateKey);
       expect(response.data.message).toEqual(
         'File has been deleted successfully',
       );
     });
-
-    // it('should upload file and save file info', async () => {
-    //   const mockResponse = successResponse({
-    //     privateKey: 'mockPrivateKey',
-    //     publicKey: 'mockPublicKey',
-    //   });
-
-    //   storageRepository.upload = jest
-    //     .fn()
-    //     .mockResolvedValue({ success: false });
-    //   dbFileRepository.saveFileInfo = jest.fn().mockResolvedValue(false);
-
-    //   const result = await fileService.uploadFiles(mockFile);
-
-    //   expect(result).toEqual(mockResponse);
-    //   expect(storageRepository.upload).toHaveBeenCalledWith(mockFile);
-    //   expect(dbFileRepository.saveFileInfo).toHaveBeenCalledWith({
-    //     fileKey: mockFile.originalname,
-    //     mimeType: mockFile.mimetype,
-    //     privateKey: 'mockPrivateKey',
-    //     publicKey: 'mockPublicKey',
-    //     provider: fileService['provider'],
-    //   });
-    // });
-
-    // it('should throw error if file upload fails', async () => {
-    //   const mockFile = {} as any;
-
-    //   storageRepository.upload = jest
-    //     .fn()
-    //     .mockResolvedValue({ success: false, message: 'Upload failed' });
-
-    //   await expect(fileService.uploadFiles(mockFile)).rejects.toThrowError(
-    //     'Upload failed',
-    //   );
-    // });
   });
-
-  // Add more test cases for other methods such as getFile and deleteFile
 });
