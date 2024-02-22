@@ -46,5 +46,6 @@ export function storageRepositoryFactory(
       inject: [LocalRepository, S3Repository, GCPRepository],
     },
   ],
+  exports: [DBFileRepository, LocalRepository, S3Repository, GCPRepository],
 })
 export class FileModule {}
