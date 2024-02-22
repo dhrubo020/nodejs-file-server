@@ -37,4 +37,4 @@ STORAGE_PROVIDER = LOCAL or S3_BUCKET or GCP_BUCKET
 
 ## Author
 
-- [Kamil Myśliwiec](https://kamilmysliwiec.com)
+- [Dhrubo](https://www.linkedin.com/in/dnsdhrubo/)
