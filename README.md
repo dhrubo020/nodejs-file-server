@@ -3,7 +3,7 @@
 This project contains REST APIs for uploading, retrieving, and deleting files using [NestJS](https://github.com/nestjs/nest).
 The special feature of this project is that you can upload files to AWS S3, GCP Bucket, Azure, and Local storage just by changing your environment configuration.
 
-## Installation
+## Installation Guid
 
 ```bash
 $ npm install
